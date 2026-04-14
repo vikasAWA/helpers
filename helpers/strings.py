@@ -20,6 +20,38 @@ def is_int(s: str) -> bool:
     try: int(s); return True
     except ValueError: return False
 
+def replace_many(text: str, mapping:dict) -> str:
+    """Replace multiple substrings in text using a mapping.
+
+    Longer keys take priority over shorter ones, so 'hello' will
+    match before 'he' if both are in the mapping.
+
+    Args:
+        text: The input string to process.
+        mapping: A dict of {old: new} replacements.
+
+    Returns:
+        A new string with all replacements applied.
+
+    Example:
+        >>> replace_many("hello world", {"hello": "hi", "world": "earth"})
+        'hi earth'
+    """
+    res = []
+    i = 0
+    sorted_keys =  sorted(mapping, key=len, reverse=True)
+    while i < len(text):
+        replaced = False
+        for key in sorted_keys:
+            if text.startswith(key, i):
+                res.append(mapping[key])
+                i += len(key)
+                replaced = True
+                break 
+        if not replaced:
+            res.append(text[i])
+            i += 1
+    return "".join(res)
 if __name__ == "__main__":
     t2 = """
         hello
@@ -28,4 +60,6 @@ if __name__ == "__main__":
     """
 
     print(clean_multiline(t2))
+    mapping = {"he": "SHE", "hello": "HI"}
+    print(replace_many("hello", mapping))
 
